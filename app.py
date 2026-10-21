@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 from datetime import datetime
-import plotly.express as px
 
 st.set_page_config(page_title="Gastos", page_icon="💰", layout="wide")
 
@@ -53,10 +52,13 @@ if not df.empty:
     col2.metric("Persona A", f"${gastos_A:,.2f}")
     col3.metric("Persona B", f"${gastos_B:,.2f}")
     
+    st.markdown("---")
+    
     c1, c2 = st.columns(2)
     with c1:
-        df_cat = df.groupby("categoria")["monto"].sum().reset_index()
-        fig = px.pie(df_cat, values="monto", names="categoria", hole=0.4)
-        st.plotly_chart(fig, use_container_width=True)
+        st.subheader("📊 Gastos por Categoría")
+        df_cat = df.groupby("categoria")["monto"].sum()
+        st.bar_chart(df_cat)
     with c2:
+        st.subheader("📋 Historial de Movimientos")
         st.dataframe(df[["fecha", "descripcion", "monto", "categoria", "registrado_por"]], use_container_width=True)
